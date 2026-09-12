@@ -15,9 +15,14 @@ public class Category {
     private String name;
     private BigDecimal amount;
 
-    public Category(BigDecimal amount, String name) {
-        this.amount = amount;
+    public Category() {
+
+    }
+
+    public Category(String name) {
+        this.id = UUID.randomUUID();
         this.name = name;
+        this.amount = BigDecimal.ZERO;
     }
 
     public String getName() {
