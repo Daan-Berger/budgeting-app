@@ -1,9 +1,11 @@
 package com.daanberger.budgeting.domain;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -12,25 +14,37 @@ import jakarta.persistence.Table;
 public class Category {
     @Id
     private UUID id;
-    private String name;
-    private BigDecimal amount;
 
-    public Category() {
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BudgetBucket bucket;
+
+    protected Category() {
 
     }
 
-    public Category(String name) {
+    public Category(String name, BudgetBucket budgetBucket) {
         this.id = UUID.randomUUID();
         this.name = name;
-        this.amount = BigDecimal.ZERO;
+        this.bucket = budgetBucket;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public BudgetBucket getBucket() {
+        return bucket;
+    }
 }
