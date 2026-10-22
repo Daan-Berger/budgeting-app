@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
+import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
+import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 
@@ -13,5 +15,15 @@ public class ApiExceptionHandler {
     @ExceptionHandler(CategoryAlreadyExistsException.class)
     public ProblemDetail HandleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ProblemDetail handleCategoryNotFoundException(CategoryNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(TransactionNotFoundException.class)
+    public ProblemDetail handleTransactionNotFoundException(TransactionNotFoundException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 }
