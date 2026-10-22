@@ -11,7 +11,7 @@ import org.springframework.http.ProblemDetail;
 public class ApiExceptionHandler {
 
     @ExceptionHandler(CategoryAlreadyExistsException.class)
-    public ProblemDetail HanleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
+    public ProblemDetail HandleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
     }
 }
