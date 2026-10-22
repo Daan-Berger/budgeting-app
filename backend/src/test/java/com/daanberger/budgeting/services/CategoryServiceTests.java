@@ -32,7 +32,7 @@ public class CategoryServiceTests {
     CategoryService service;
 
     @Test
-    void testAddCategorySuccesfully() {
+    void addCategory_whenNameIsNew_savesCategory() {
         CategoryDTO dto = new CategoryDTO("Groceries", BudgetBucket.NEEDS);
 
         when(repository.findByName("Groceries")).thenReturn(Optional.empty());
