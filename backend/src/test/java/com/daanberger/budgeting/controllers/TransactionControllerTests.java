@@ -20,9 +20,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daanberger.budgeting.domain.dto.AssignCategoryRequest;
-import com.daanberger.budgeting.domain.dto.CreateTransactionRequest;
-import com.daanberger.budgeting.domain.dto.TransactionResponse;
+import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
+import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
+import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
 import com.daanberger.budgeting.services.TransactionService;

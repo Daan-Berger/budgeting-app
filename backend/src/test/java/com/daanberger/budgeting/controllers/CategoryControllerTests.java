@@ -6,8 +6,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.daanberger.budgeting.controllers.dto.CategoryDTO;
 import com.daanberger.budgeting.domain.BudgetBucket;
-import com.daanberger.budgeting.domain.dto.CategoryDTO;
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
 import com.daanberger.budgeting.services.CategoryService;
 
@@ -24,49 +24,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CategoryController.class)
 public class CategoryControllerTests {
 
-    @Autowired
-    MockMvc mockMvc;
+        @Autowired
+        MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+        @Autowired
+        ObjectMapper objectMapper;
 
-    @MockitoBean
-    CategoryService service;
+        @MockitoBean
+        CategoryService service;
 
-    @Test
-    void addCategory_withValidPayload_returnsCreated() throws Exception {
-        CategoryDTO dto = new CategoryDTO("Groceries", BudgetBucket.NEEDS);
+        @Test
+        void addCategory_withValidPayload_returnsCreated() throws Exception {
+                CategoryDTO dto = new CategoryDTO("Groceries", BudgetBucket.NEEDS);
 
-        mockMvc.perform(post("/api/category/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated());
+                mockMvc.perform(post("/api/category/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isCreated());
 
-        verify(service).addCategory(dto);
-    }
+                verify(service).addCategory(dto);
+        }
 
-    @Test
-    void addCategory_withInvalidPayload_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/category/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {"name":"","budgetBucket":"NEEDS"}
-                        """))
-                .andExpect(status().isBadRequest());
+        @Test
+        void addCategory_withInvalidPayload_returnsBadRequest() throws Exception {
+                mockMvc.perform(post("/api/category/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                {"name":"","budgetBucket":"NEEDS"}
+                                                """))
+                                .andExpect(status().isBadRequest());
 
-        verify(service, never()).addCategory(any());
-    }
+                verify(service, never()).addCategory(any());
+        }
 
-    @Test
-    void addCategory_alreadyExists_returnsConflict() throws Exception {
-        CategoryDTO dto = new CategoryDTO("Groceries", BudgetBucket.NEEDS);
+        @Test
+        void addCategory_alreadyExists_returnsConflict() throws Exception {
+                CategoryDTO dto = new CategoryDTO("Groceries", BudgetBucket.NEEDS);
 
-        doThrow(new CategoryAlreadyExistsException("Groceries"))
-                .when(service).addCategory(any());
+                doThrow(new CategoryAlreadyExistsException("Groceries"))
+                                .when(service).addCategory(any());
 
-        mockMvc.perform(post("/api/category/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isConflict());
-    }
+                mockMvc.perform(post("/api/category/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isConflict());
+        }
 }

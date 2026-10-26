@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.daanberger.budgeting.domain.dto.AssignCategoryRequest;
-import com.daanberger.budgeting.domain.dto.CreateTransactionRequest;
-import com.daanberger.budgeting.domain.dto.TransactionResponse;
+import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
+import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
+import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.services.TransactionService;
 
 import jakarta.validation.Valid;

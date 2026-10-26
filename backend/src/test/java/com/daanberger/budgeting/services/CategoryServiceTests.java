@@ -16,9 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.daanberger.budgeting.controllers.dto.CategoryDTO;
 import com.daanberger.budgeting.domain.BudgetBucket;
 import com.daanberger.budgeting.domain.Category;
-import com.daanberger.budgeting.domain.dto.CategoryDTO;
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
 import com.daanberger.budgeting.repositories.CategoryRepository;
 

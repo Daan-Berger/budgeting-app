@@ -21,12 +21,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
+import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
+import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.domain.BudgetBucket;
 import com.daanberger.budgeting.domain.Category;
 import com.daanberger.budgeting.domain.Transaction;
-import com.daanberger.budgeting.domain.dto.AssignCategoryRequest;
-import com.daanberger.budgeting.domain.dto.CreateTransactionRequest;
-import com.daanberger.budgeting.domain.dto.TransactionResponse;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
 import com.daanberger.budgeting.repositories.CategoryRepository;
