@@ -10,7 +10,6 @@ import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import java.util.stream.Collectors;
-import org.springframework.validation.FieldError;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
