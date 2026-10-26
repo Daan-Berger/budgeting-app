@@ -27,7 +27,6 @@ public class Transaction {
     @Column(nullable = false)
     private String counterparty;
 
-    @Column(nullable = false)
     private String counterpartyIban;
 
     private String description;

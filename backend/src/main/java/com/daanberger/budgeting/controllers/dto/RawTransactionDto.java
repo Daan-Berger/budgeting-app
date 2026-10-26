@@ -10,6 +10,6 @@ public record RawTransactionDto(
         @NotNull LocalDate date,
         @NotNull BigDecimal amount,
         @NotBlank String counterparty,
-        @NotBlank String counterpartyIban,
+        String counterpartyIban,
         String description) {
 }

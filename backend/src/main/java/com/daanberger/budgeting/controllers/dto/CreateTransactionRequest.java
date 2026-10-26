@@ -8,10 +8,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateTransactionRequest(
-                @NotNull LocalDate date,
-                @NotNull BigDecimal amount,
-                @NotBlank String counterparty,
-                @NotBlank String counterpartyIban,
-                String description,
-                UUID categoryId) {
+        @NotNull LocalDate date,
+        @NotNull BigDecimal amount,
+        @NotBlank String counterparty,
+        String counterpartyIban,
+        String description,
+        UUID categoryId) {
 }
