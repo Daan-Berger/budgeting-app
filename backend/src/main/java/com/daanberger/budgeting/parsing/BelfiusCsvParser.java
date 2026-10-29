@@ -12,8 +12,11 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.stereotype.Component;
+
 import com.daanberger.budgeting.controllers.dto.RawTransactionDto;
 
+@Component
 public class BelfiusCsvParser implements BankCsvParser {
     private static final DateTimeFormatter BELFIUS_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -49,15 +52,22 @@ public class BelfiusCsvParser implements BankCsvParser {
                             record.get("Boekingsdatum").trim(),
                             BELFIUS_DATE);
 
-                    String bedrag = record.get("Bedrag").replace(",", ".");
-                    BigDecimal amount = new BigDecimal(bedrag);
+                    String amount = record.get("Bedrag")
+                            .replaceAll("[\\p{Z}]", "")
+                            .replace(",", ".");
+
+                    BigDecimal SanitizedAmount = new BigDecimal(amount);
 
                     String counterParty = record.get("Naam tegenpartij bevat");
 
                     String counterpartyIban = record.get("Rekening tegenpartij");
+                    if (record.get("Rekening tegenpartij").isEmpty()) {
+                        counterpartyIban = null;
+                    }
+
                     String description = record.get("Mededelingen");
 
-                    RawTransactionDto dto = new RawTransactionDto(date, amount, counterParty, counterpartyIban,
+                    RawTransactionDto dto = new RawTransactionDto(date, SanitizedAmount, counterParty, counterpartyIban,
                             description);
 
                     transactions.add(dto);
@@ -65,7 +75,7 @@ public class BelfiusCsvParser implements BankCsvParser {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error parsing Belfius CSV: " + e.getMessage(), e);
         }
 
         return transactions;
