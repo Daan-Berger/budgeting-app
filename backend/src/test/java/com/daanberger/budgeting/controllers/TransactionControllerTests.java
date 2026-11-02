@@ -25,6 +25,7 @@ import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
 import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
+import com.daanberger.budgeting.services.TransactionIngestionService;
 import com.daanberger.budgeting.services.TransactionService;
 
 import tools.jackson.databind.ObjectMapper;
@@ -32,140 +33,143 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @WebMvcTest(TransactionController.class)
 public class TransactionControllerTests {
-    @Autowired
-    MockMvc mockMvc;
+        @Autowired
+        MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+        @Autowired
+        ObjectMapper objectMapper;
 
-    @MockitoBean
-    TransactionService service;
+        @MockitoBean
+        TransactionService transactionService;
 
-    @Test
-    void addTransaction_WithValidPayload_ReturnsCreated() throws Exception {
-        CreateTransactionRequest request = new CreateTransactionRequest(
-                LocalDate.of(2026, 10, 25),
-                new BigDecimal("-60"),
-                "Delhaize",
-                "BE68539007547034",
-                "Groceries this week",
-                null);
+        @MockitoBean
+        TransactionIngestionService transactionIngestionService;
 
-        mockMvc.perform(post("/api/transaction/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+        @Test
+        void addTransaction_WithValidPayload_ReturnsCreated() throws Exception {
+                CreateTransactionRequest request = new CreateTransactionRequest(
+                                LocalDate.of(2026, 10, 25),
+                                new BigDecimal("-60"),
+                                "Delhaize",
+                                "BE68539007547034",
+                                "Groceries this week",
+                                null);
 
-        verify(service).createTransaction(request);
-    }
+                mockMvc.perform(post("/api/transaction/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isCreated());
 
-    @Test
-    void addTransaction_WithInvalidPayload_ReturnsBadRequest() throws Exception {
-        CreateTransactionRequest request = new CreateTransactionRequest(
-                null,
-                new BigDecimal("-60"),
-                "Delhaize",
-                "BE68539007547034",
-                "Groceries this week",
-                null);
+                verify(transactionService).createTransaction(request);
+        }
 
-        mockMvc.perform(post("/api/transaction/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+        @Test
+        void addTransaction_WithInvalidPayload_ReturnsBadRequest() throws Exception {
+                CreateTransactionRequest request = new CreateTransactionRequest(
+                                null,
+                                new BigDecimal("-60"),
+                                "Delhaize",
+                                "BE68539007547034",
+                                "Groceries this week",
+                                null);
 
-        verify(service, never()).createTransaction(request);
-    }
+                mockMvc.perform(post("/api/transaction/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isBadRequest());
 
-    @Test
-    void getTransaction_WithExistingTransaction_ReturnsOk() throws Exception {
-        UUID id = UUID.randomUUID();
+                verify(transactionService, never()).createTransaction(request);
+        }
 
-        TransactionResponse response = new TransactionResponse(
-                id,
-                LocalDate.of(2026, 10, 25),
-                new BigDecimal("-60"),
-                "Delhaize",
-                "BE68539007547034",
-                "Groceries this week",
-                null,
-                null);
+        @Test
+        void getTransaction_WithExistingTransaction_ReturnsOk() throws Exception {
+                UUID id = UUID.randomUUID();
 
-        when(service.getTransaction(id)).thenReturn(response);
+                TransactionResponse response = new TransactionResponse(
+                                id,
+                                LocalDate.of(2026, 10, 25),
+                                new BigDecimal("-60"),
+                                "Delhaize",
+                                "BE68539007547034",
+                                "Groceries this week",
+                                null,
+                                null);
 
-        mockMvc.perform(get("/api/transaction/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id.toString()))
-                .andExpect(jsonPath("$.counterparty").value("Delhaize"))
-                .andExpect(jsonPath("$.amount").value(-60));
+                when(transactionService.getTransaction(id)).thenReturn(response);
 
-        verify(service).getTransaction(id);
-    }
+                mockMvc.perform(get("/api/transaction/{id}", id))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(id.toString()))
+                                .andExpect(jsonPath("$.counterparty").value("Delhaize"))
+                                .andExpect(jsonPath("$.amount").value(-60));
 
-    @Test
-    void getTransaction_WithNonExistingTransaction_ReturnsNotFound() throws Exception {
-        UUID id = UUID.randomUUID();
+                verify(transactionService).getTransaction(id);
+        }
 
-        doThrow(new TransactionNotFoundException(id))
-                .when(service).getTransaction(id);
+        @Test
+        void getTransaction_WithNonExistingTransaction_ReturnsNotFound() throws Exception {
+                UUID id = UUID.randomUUID();
 
-        mockMvc.perform(get("/api/transaction/{id}", id))
-                .andExpect(status().isNotFound());
+                doThrow(new TransactionNotFoundException(id))
+                                .when(transactionService).getTransaction(id);
 
-        verify(service).getTransaction(id);
-    }
+                mockMvc.perform(get("/api/transaction/{id}", id))
+                                .andExpect(status().isNotFound());
 
-    @Test
-    void assignCategory_WithExistingTransactionAndCategory_ReturnsOk() throws Exception {
-        UUID transactionId = UUID.randomUUID();
+                verify(transactionService).getTransaction(id);
+        }
 
-        UUID categoryId = UUID.randomUUID();
+        @Test
+        void assignCategory_WithExistingTransactionAndCategory_ReturnsOk() throws Exception {
+                UUID transactionId = UUID.randomUUID();
 
-        AssignCategoryRequest request = new AssignCategoryRequest(categoryId);
+                UUID categoryId = UUID.randomUUID();
 
-        mockMvc.perform(patch("/api/transaction/{id}/assign-category", transactionId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                AssignCategoryRequest request = new AssignCategoryRequest(categoryId);
 
-        verify(service).assignCategory(transactionId, request);
-    }
+                mockMvc.perform(patch("/api/transaction/{id}/assign-category", transactionId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk());
 
-    @Test
-    void assignCategory_WithNonExistingTransaction_ReturnsNotFound() throws Exception {
-        UUID transactionId = UUID.randomUUID();
+                verify(transactionService).assignCategory(transactionId, request);
+        }
 
-        UUID categoryId = UUID.randomUUID();
+        @Test
+        void assignCategory_WithNonExistingTransaction_ReturnsNotFound() throws Exception {
+                UUID transactionId = UUID.randomUUID();
 
-        AssignCategoryRequest request = new AssignCategoryRequest(categoryId);
+                UUID categoryId = UUID.randomUUID();
 
-        doThrow(new TransactionNotFoundException(transactionId))
-                .when(service).assignCategory(transactionId, request);
+                AssignCategoryRequest request = new AssignCategoryRequest(categoryId);
 
-        mockMvc.perform(patch("/api/transaction/{id}/assign-category", transactionId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
+                doThrow(new TransactionNotFoundException(transactionId))
+                                .when(transactionService).assignCategory(transactionId, request);
 
-        verify(service).assignCategory(transactionId, request);
-    }
+                mockMvc.perform(patch("/api/transaction/{id}/assign-category", transactionId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isNotFound());
 
-    @Test
-    void assignCategory_WithNonExistingCategory_ReturnsNotFound() throws Exception {
-        UUID transactionId = UUID.randomUUID();
+                verify(transactionService).assignCategory(transactionId, request);
+        }
 
-        UUID categoryId = UUID.randomUUID();
+        @Test
+        void assignCategory_WithNonExistingCategory_ReturnsNotFound() throws Exception {
+                UUID transactionId = UUID.randomUUID();
 
-        AssignCategoryRequest request = new AssignCategoryRequest(categoryId);
+                UUID categoryId = UUID.randomUUID();
 
-        doThrow(new CategoryNotFoundException(categoryId))
-                .when(service).assignCategory(transactionId, request);
+                AssignCategoryRequest request = new AssignCategoryRequest(categoryId);
 
-        mockMvc.perform(patch("/api/transaction/{id}/assign-category", transactionId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
+                doThrow(new CategoryNotFoundException(categoryId))
+                                .when(transactionService).assignCategory(transactionId, request);
 
-        verify(service).assignCategory(transactionId, request);
-    }
+                mockMvc.perform(patch("/api/transaction/{id}/assign-category", transactionId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isNotFound());
+
+                verify(transactionService).assignCategory(transactionId, request);
+        }
 }

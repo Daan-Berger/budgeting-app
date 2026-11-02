@@ -1,6 +1,7 @@
 package com.daanberger.budgeting.controllers;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,12 @@ public class TransactionController {
 
     @PostMapping("/import")
     public void importCsv(@RequestParam("file") MultipartFile file) throws IOException {
-        ingestionService.ingestFromCsv(file.getInputStream());
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded CSV file cannot be empty.");
+        }
+
+        try (InputStream stream = file.getInputStream()) {
+            ingestionService.ingestFromCsv(stream);
+        }
     }
 }
