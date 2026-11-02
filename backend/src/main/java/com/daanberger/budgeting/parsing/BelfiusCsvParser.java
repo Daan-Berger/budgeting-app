@@ -24,8 +24,8 @@ public class BelfiusCsvParser implements BankCsvParser {
     public List<RawTransactionDto> parseDto(InputStream stream) {
         List<RawTransactionDto> transactions = new ArrayList<>();
 
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(stream, StandardCharsets.UTF_8))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
