@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
@@ -18,7 +19,8 @@ import com.daanberger.budgeting.controllers.dto.RawTransactionDto;
 
 @Component
 public class BelfiusCsvParser implements BankCsvParser {
-    private static final DateTimeFormatter BELFIUS_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter BELFIUS_DATE = DateTimeFormatter.ofPattern("dd/MM/uuuu")
+            .withResolverStyle(ResolverStyle.STRICT);
 
     @Override
     public List<RawTransactionDto> parseDto(InputStream stream) {
