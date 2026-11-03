@@ -46,6 +46,6 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(BelfiusCsvParseException.class)
     public ProblemDetail handleBelfiusCsvParseException(BelfiusCsvParseException ex) {
-        return ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 }
