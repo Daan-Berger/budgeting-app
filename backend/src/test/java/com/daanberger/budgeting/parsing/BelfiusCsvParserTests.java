@@ -1,6 +1,7 @@
 package com.daanberger.budgeting.parsing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.daanberger.budgeting.controllers.dto.RawTransactionDto;
+import com.daanberger.budgeting.exceptions.BelfiusCsvParseException;
 
 @ExtendWith(MockitoExtension.class)
 public class BelfiusCsvParserTests {
@@ -76,7 +79,7 @@ public class BelfiusCsvParserTests {
     }
 
     @Test
-    void parseDto_shouldThrowRuntimeExceptionForInvalidTransactionData() {
+    void parseDto_shouldThrowException_whenDateFormatIsMalformed() {
         String csvContent = """
                 Rekening;Boekingsdatum;Rekeninguittrekselnummer;Transactienummer;Rekening tegenpartij;Naam tegenpartij bevat;Straat en nummer;Postcode en gemeente;Transactie;Valutadatum;Bedrag;Devies;BIC;Landcode;Mededelingen
                 BE30 0635 3870 6511;invalid-date;;;;SAMPLE STORE;;1000 BRUSSEL;BANCONTACT-AANKOOP;26/10/2026;-10,00;EUR;;BE;Invalid transaction
@@ -84,6 +87,54 @@ public class BelfiusCsvParserTests {
 
         InputStream stream = new ByteArrayInputStream(csvContent.getBytes(StandardCharsets.UTF_8));
 
-        assertThrows(RuntimeException.class, () -> parser.parseDto(stream));
+        BelfiusCsvParseException exception = assertThrows(BelfiusCsvParseException.class,
+                () -> parser.parseDto(stream));
+
+        assertInstanceOf(DateTimeParseException.class, exception.getCause());
+    }
+
+    @Test
+    void parseDto_shouldThrowException_whenDateIsCalendarInvalid() {
+        String csvContent = """
+                Rekening;Boekingsdatum;Rekeninguittrekselnummer;Transactienummer;Rekening tegenpartij;Naam tegenpartij bevat;Straat en nummer;Postcode en gemeente;Transactie;Valutadatum;Bedrag;Devies;BIC;Landcode;Mededelingen
+                BE30 0635 3870 6511;31/02/2025;;;;SAMPLE STORE;;1000 BRUSSEL;BANCONTACT-AANKOOP;26/10/2026;-10,00;EUR;;BE;Invalid transaction
+                """;
+
+        InputStream stream = new ByteArrayInputStream(csvContent.getBytes(StandardCharsets.UTF_8));
+
+        BelfiusCsvParseException exception = assertThrows(BelfiusCsvParseException.class,
+                () -> parser.parseDto(stream));
+
+        assertInstanceOf(DateTimeParseException.class, exception.getCause());
+    }
+
+    @Test
+    void parseDto_shouldThrowException_whenAmountIsNotNumeric() {
+        String csvContent = """
+                Rekening;Boekingsdatum;Rekeninguittrekselnummer;Transactienummer;Rekening tegenpartij;Naam tegenpartij bevat;Straat en nummer;Postcode en gemeente;Transactie;Valutadatum;Bedrag;Devies;BIC;Landcode;Mededelingen
+                BE30 0635 3870 6511;26/01/2025;;;;SAMPLE STORE;;1000 BRUSSEL;BANCONTACT-AANKOOP;26/10/2026;NOT_A_NUMBER;EUR;;BE;Invalid transaction
+                """;
+
+        InputStream stream = new ByteArrayInputStream(csvContent.getBytes(StandardCharsets.UTF_8));
+
+        BelfiusCsvParseException exception = assertThrows(BelfiusCsvParseException.class,
+                () -> parser.parseDto(stream));
+
+        assertInstanceOf(NumberFormatException.class, exception.getCause());
+    }
+
+    @Test
+    void parseDto_shouldThrowException_whenRowIsTruncated() {
+        String csvContent = """
+                Rekening;Boekingsdatum;Rekeninguittrekselnummer;Transactienummer;Rekening tegenpartij;Naam tegenpartij bevat;Straat en nummer;Postcode en gemeente;Transactie;Valutadatum;Bedrag;Devies;BIC;Landcode;Mededelingen
+                BE30 0635 3870 6511;25/01/2025;;;;SAMPLE STORE;;1000 BRUSSEL;BANCONTACT-AANKOOP;
+                """;
+
+        InputStream stream = new ByteArrayInputStream(csvContent.getBytes(StandardCharsets.UTF_8));
+
+        BelfiusCsvParseException exception = assertThrows(BelfiusCsvParseException.class,
+                () -> parser.parseDto(stream));
+
+        assertInstanceOf(IllegalArgumentException.class, exception.getCause());
     }
 }
