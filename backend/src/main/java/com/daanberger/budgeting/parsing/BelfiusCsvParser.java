@@ -1,12 +1,14 @@
 package com.daanberger.budgeting.parsing;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
 
 import com.daanberger.budgeting.controllers.dto.RawTransactionDto;
+import com.daanberger.budgeting.exceptions.BelfiusCsvParseException;
 
 @Component
 public class BelfiusCsvParser implements BankCsvParser {
@@ -37,7 +40,7 @@ public class BelfiusCsvParser implements BankCsvParser {
             }
 
             if (line == null) {
-                throw new IllegalArgumentException("Invalid Belfius CSV: Table header row not found.");
+                throw new BelfiusCsvParseException("Invalid Belfius CSV: Table header row not found.");
             }
 
             CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT)
@@ -76,8 +79,9 @@ public class BelfiusCsvParser implements BankCsvParser {
                 }
             }
 
-        } catch (Exception e) {
-            throw new RuntimeException("Error parsing Belfius CSV: " + e.getMessage(), e);
+        } catch (DateTimeParseException | IllegalArgumentException | IOException e) {
+            throw new BelfiusCsvParseException(
+                    "Invalid Belfius CSV transaction data", e);
         }
 
         return transactions;
