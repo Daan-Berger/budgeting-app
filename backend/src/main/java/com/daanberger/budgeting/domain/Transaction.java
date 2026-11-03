@@ -11,9 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "transaction", uniqueConstraints = {
+        @UniqueConstraint(name = "transaction_date_amount_desc", columnNames = { "date", "amount", "description" })
+})
 public class Transaction {
     @Id
     private UUID id;
