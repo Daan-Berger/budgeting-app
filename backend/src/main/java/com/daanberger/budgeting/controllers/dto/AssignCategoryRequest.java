@@ -1,4 +1,4 @@
-package com.daanberger.budgeting.domain.dto;
+package com.daanberger.budgeting.controllers.dto;
 
 import java.util.UUID;
 

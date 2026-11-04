@@ -4,6 +4,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.daanberger.budgeting.exceptions.BelfiusCsvParseException;
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
@@ -41,5 +42,10 @@ public class ApiExceptionHandler {
                         (first, second) -> first + "; " + second)));
 
         return problem;
+    }
+
+    @ExceptionHandler(BelfiusCsvParseException.class)
+    public ProblemDetail handleBelfiusCsvParseException(BelfiusCsvParseException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 }

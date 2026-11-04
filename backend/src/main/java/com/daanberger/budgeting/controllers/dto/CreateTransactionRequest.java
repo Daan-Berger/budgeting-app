@@ -1,4 +1,4 @@
-package com.daanberger.budgeting.domain.dto;
+package com.daanberger.budgeting.controllers.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ public record CreateTransactionRequest(
         @NotNull LocalDate date,
         @NotNull BigDecimal amount,
         @NotBlank String counterparty,
-        @NotBlank String counterpartyIban,
+        String counterpartyIban,
         String description,
         UUID categoryId) {
 }

@@ -2,8 +2,8 @@ package com.daanberger.budgeting.services;
 
 import org.springframework.stereotype.Service;
 
+import com.daanberger.budgeting.controllers.dto.CategoryDTO;
 import com.daanberger.budgeting.domain.Category;
-import com.daanberger.budgeting.domain.dto.CategoryDTO;
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
 import com.daanberger.budgeting.repositories.CategoryRepository;
 

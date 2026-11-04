@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
+import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
+import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.domain.Category;
 import com.daanberger.budgeting.domain.Transaction;
-import com.daanberger.budgeting.domain.dto.AssignCategoryRequest;
-import com.daanberger.budgeting.domain.dto.CreateTransactionRequest;
-import com.daanberger.budgeting.domain.dto.TransactionResponse;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
 import com.daanberger.budgeting.repositories.CategoryRepository;
