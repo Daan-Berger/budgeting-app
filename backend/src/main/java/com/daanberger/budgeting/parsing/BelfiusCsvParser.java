@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -79,7 +80,7 @@ public class BelfiusCsvParser implements BankCsvParser {
                 }
             }
 
-        } catch (DateTimeParseException | IllegalArgumentException | IOException e) {
+        } catch (DateTimeParseException | IllegalArgumentException | IOException | UncheckedIOException e) {
             throw new BelfiusCsvParseException(
                     "Invalid Belfius CSV transaction data", e);
         }
