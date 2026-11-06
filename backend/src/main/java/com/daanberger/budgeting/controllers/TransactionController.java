@@ -2,6 +2,7 @@ package com.daanberger.budgeting.controllers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,11 @@ public class TransactionController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addTransaction(@Valid @RequestBody CreateTransactionRequest request) {
         service.createTransaction(request);
+    }
+
+    @GetMapping()
+    public List<TransactionResponse> getAllTransactions() {
+        return service.getAllTransactions();
     }
 
     @GetMapping("/{id}")
