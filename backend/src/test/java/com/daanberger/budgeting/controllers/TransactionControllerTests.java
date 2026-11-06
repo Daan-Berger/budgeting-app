@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -117,6 +118,30 @@ public class TransactionControllerTests {
                                 .andExpect(status().isNotFound());
 
                 verify(transactionService).getTransaction(id);
+        }
+
+        @Test
+        void getAllTransactions_ReturnsTransactions() throws Exception {
+                UUID id = UUID.randomUUID();
+                TransactionResponse response = new TransactionResponse(
+                                id,
+                                LocalDate.of(2026, 10, 25),
+                                new BigDecimal("-60"),
+                                "Delhaize",
+                                "BE68539007547034",
+                                "Groceries this week",
+                                null,
+                                null);
+
+                when(transactionService.getAllTransactions()).thenReturn(List.of(response));
+
+                mockMvc.perform(get("/api/transaction"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].id").value(id.toString()))
+                                .andExpect(jsonPath("$[0].counterparty").value("Delhaize"))
+                                .andExpect(jsonPath("$[0].amount").value(-60));
+
+                verify(transactionService).getAllTransactions();
         }
 
         @Test
