@@ -145,6 +145,17 @@ public class TransactionControllerTests {
         }
 
         @Test
+        void getAllTransactions_WhenNoTransactionsExist_ReturnsEmptyArray() throws Exception {
+                when(transactionService.getAllTransactions()).thenReturn(List.of());
+
+                mockMvc.perform(get("/api/transaction"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$").isEmpty());
+
+                verify(transactionService).getAllTransactions();
+        }
+
+        @Test
         void assignCategory_WithExistingTransactionAndCategory_ReturnsOk() throws Exception {
                 UUID transactionId = UUID.randomUUID();
 
