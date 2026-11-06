@@ -1,5 +1,6 @@
 package com.daanberger.budgeting.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -43,6 +44,14 @@ public class TransactionService {
                 category);
 
         transactionRepository.save(transaction);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TransactionResponse> getAllTransactions() {
+        return transactionRepository.findAll()
+                .stream()
+                .map(t -> TransactionResponse.from(t))
+                .toList();
     }
 
     @Transactional(readOnly = true)

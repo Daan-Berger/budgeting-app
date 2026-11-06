@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -126,6 +127,35 @@ public class TransactionServiceTests {
         when(transactionRepository.findById(transactionUuid)).thenReturn(Optional.empty());
 
         assertThrows(TransactionNotFoundException.class, () -> service.getTransaction(transactionUuid));
+    }
+
+    @Test
+    void getAllTransactions_WhenTransactionsExist_ReturnsMappedTransactions() {
+        Category category = new Category("Groceries", BudgetBucket.NEEDS);
+        Transaction transaction = sampleTransaction(category);
+
+        when(transactionRepository.findAll()).thenReturn(List.of(transaction));
+
+        List<TransactionResponse> responses = service.getAllTransactions();
+
+        assertEquals(1, responses.size());
+        assertEquals(transaction.getId(), responses.get(0).id());
+        assertEquals(transaction.getDate(), responses.get(0).date());
+        assertEquals(transaction.getAmount(), responses.get(0).amount());
+        assertEquals(transaction.getCounterparty(), responses.get(0).counterparty());
+        assertEquals(category.getId(), responses.get(0).categoryId());
+        assertEquals(category.getName(), responses.get(0).categoryName());
+        verify(transactionRepository).findAll();
+    }
+
+    @Test
+    void getAllTransactions_WhenNoTransactionsExist_ReturnsEmptyList() {
+        when(transactionRepository.findAll()).thenReturn(List.of());
+
+        List<TransactionResponse> responses = service.getAllTransactions();
+
+        assertEquals(List.of(), responses);
+        verify(transactionRepository).findAll();
     }
 
     @Test
