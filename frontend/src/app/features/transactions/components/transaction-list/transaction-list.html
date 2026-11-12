@@ -1,1 +1,30 @@
-<p>transaction-list works!</p>
+<section class="transaction-list" aria-labelledby="transactions-title">
+    <div class="transaction-list__header">
+        <p class="transaction-list__eyebrow">Overview</p>
+        <h1 id="transactions-title">All transactions</h1>
+    </div>
+
+    @if (errorMessage(); as error) {
+    <p class="transaction-list__message transaction-list__message--error">{{ error }}</p>
+    } @else if (transactions().length === 0) {
+    <p class="transaction-list__message">No transactions found.</p>
+    } @else {
+    <div class="transaction-list__items">
+        @for (transaction of transactions(); track transaction.id) {
+        <article class="transaction-card">
+            <p class="transaction-card__amount" [class.transaction-card__amount--negative]="transaction.amount < 0"
+                [class.transaction-card__amount--positive]="transaction.amount >= 0">
+                {{ transaction.amount | currency: 'EUR' : 'symbol' : '1.2-2' }}
+            </p>
+            <div class="transaction-card__details">
+                <p class="transaction-card__name">{{ transaction.counterparty }}</p>
+                <p class="transaction-card__category">{{ transaction.categoryName || 'Uncategorized' }}</p>
+            </div>
+            <time class="transaction-card__date">
+                {{ transaction.date | date: 'dd-MM-yyyy' }}
+            </time>
+        </article>
+        }
+    </div>
+    }
+</section>
