@@ -14,6 +14,11 @@ export class TransactionsPage {
   readonly dialog = inject(MatDialog)
 
   openUploadDialog(): void {
-    let dialogRef = this.dialog.open(UploadCsvDialog)
+    this.dialog.open(UploadCsvDialog, {
+      width: 'min(32rem, calc(100vw - 2rem))',
+      maxWidth: 'none',
+      panelClass: 'upload-dialog-panel',
+      backdropClass: 'upload-dialog-backdrop',
+    })
   }
 }

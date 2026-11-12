@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   imports: [],
@@ -6,4 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './upload-csv-dialog.css',
   templateUrl: './upload-csv-dialog.html',
 })
-export class UploadCsvDialog {}
+export class UploadCsvDialog {
+  private readonly dialogRef = inject(MatDialogRef<UploadCsvDialog>)
+
+  close(): void {
+    this.dialogRef.close()
+  }
+}

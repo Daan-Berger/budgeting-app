@@ -1,3 +1,27 @@
-<h1>Upload your CSV file below</h1>
+<section class="upload-dialog" aria-labelledby="upload-dialog-title">
+    <div class="upload-dialog__header">
+        <div>
+            <p class="upload-dialog__eyebrow">Import data</p>
+            <h1 id="upload-dialog-title">Upload CSV</h1>
+        </div>
+        <button class="upload-dialog__close" type="button" aria-label="Close upload dialog" (click)="close()">
+            &times;
+        </button>
+    </div>
 
-<input type="file" name="" id="">
+    <p class="upload-dialog__description">
+        Import your bank transactions to keep your expense tracker up to date.
+    </p>
+
+    <label class="upload-dialog__dropzone" for="csv-file">
+        <span class="upload-dialog__icon" aria-hidden="true">↑</span>
+        <span class="upload-dialog__dropzone-title">Choose a CSV file</span>
+        <span class="upload-dialog__dropzone-hint">Only CSV files are supported</span>
+    </label>
+    <input class="upload-dialog__file-input" type="file" id="csv-file" accept=".csv,text/csv">
+
+    <div class="upload-dialog__actions">
+        <button class="upload-dialog__cancel" type="button" (click)="close()">Cancel</button>
+        <button class="upload-dialog__submit" type="button">Import transactions</button>
+    </div>
+</section>
