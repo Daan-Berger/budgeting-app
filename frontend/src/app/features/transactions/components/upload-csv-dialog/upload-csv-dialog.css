@@ -75,8 +75,30 @@
     font-size: 1.5rem;
 }
 
+.upload-dialog__dropzone--selected {
+    border-style: solid;
+    border-color: #3b82f6;
+}
+
+.upload-dialog__icon--file {
+    border-radius: 0.6rem;
+}
+
 .upload-dialog__dropzone-title {
     font-weight: 700;
+}
+
+.upload-dialog__file-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.upload-dialog__error {
+    margin: 0.75rem 0 0;
+    color: #f87171;
+    font-size: 0.875rem;
 }
 
 .upload-dialog__dropzone-hint {

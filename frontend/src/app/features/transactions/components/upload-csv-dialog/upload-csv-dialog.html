@@ -13,15 +13,41 @@
         Import your bank transactions to keep your expense tracker up to date.
     </p>
 
-    <label class="upload-dialog__dropzone" for="csv-file">
-        <span class="upload-dialog__icon" aria-hidden="true">↑</span>
-        <span class="upload-dialog__dropzone-title">Choose a CSV file</span>
-        <span class="upload-dialog__dropzone-hint">Only CSV files are supported</span>
+    <label
+        class="upload-dialog__dropzone"
+        [class.upload-dialog__dropzone--selected]="selectedFile()"
+        for="csv-file"
+    >
+        @if (selectedFile(); as file) {
+            <span class="upload-dialog__icon upload-dialog__icon--file material-symbols-outlined" aria-hidden="true">
+                description
+            </span>
+            <span class="upload-dialog__dropzone-title upload-dialog__file-name" [title]="file.name">
+                {{ file.name }}
+            </span>
+            <span class="upload-dialog__dropzone-hint">{{ formatFileSize(file.size) }} · Click to choose a different file</span>
+        } @else {
+            <span class="upload-dialog__icon material-symbols-outlined" aria-hidden="true">upload</span>
+            <span class="upload-dialog__dropzone-title">Choose a CSV file</span>
+            <span class="upload-dialog__dropzone-hint">Only CSV files are supported</span>
+        }
     </label>
-    <input class="upload-dialog__file-input" type="file" id="csv-file" accept=".csv,text/csv">
+    <input
+        class="upload-dialog__file-input"
+        type="file"
+        id="csv-file"
+        accept=".csv,text/csv"
+        (change)="onFileSelected($event)"
+    >
+
+    @if (errorMessage(); as error) {
+        <p class="upload-dialog__error" role="alert">{{ error }}</p>
+    }
 
     <div class="upload-dialog__actions">
         <button class="upload-dialog__cancel" type="button" (click)="close()">Cancel</button>
-        <button class="upload-dialog__submit" type="button">Import transactions</button>
+        <button class="upload-dialog__submit" type="button" [disabled]="!selectedFile()" (click)="onSubmit()">
+            Import transactions
+        </button>
     </div>
 </section>
