@@ -1,0 +1,142 @@
+.transaction-list {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.25rem 0 3rem;
+    color: #f8fafc;
+}
+
+.transaction-list__header {
+    margin-bottom: 1.5rem;
+}
+
+.transaction-list__eyebrow {
+    margin: 0 0 0.35rem;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.transaction-list h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    letter-spacing: -0.04em;
+}
+
+.transaction-list__items {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.transaction-card {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    min-height: 4.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid #2a2d32;
+    border-radius: 1rem;
+    background: #1b1c1f;
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 18%);
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.transaction-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 28%);
+    transform: translateY(-1px);
+}
+
+.transaction-card__amount,
+.transaction-card__name,
+.transaction-card__category {
+    margin: 0;
+}
+
+.transaction-card__amount {
+    flex: 0 0 9rem;
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.transaction-card__amount--negative {
+    color: #dc2626;
+}
+
+.transaction-card__amount--positive {
+    color: #16a34a;
+}
+
+.transaction-card__name {
+    overflow: hidden;
+    color: #f1f5f9;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.transaction-card__details {
+    min-width: 0;
+}
+
+.transaction-card__category {
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 0.35rem;
+    overflow: hidden;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: #292c31;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.transaction-card__date {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.transaction-list__message {
+    padding: 1.25rem;
+    border: 1px dashed #3f4650;
+    border-radius: 1rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.transaction-list__message--error {
+    border-color: #7f1d1d;
+    background: #2a1518;
+    color: #fca5a5;
+}
+
+@media (max-width: 480px) {
+    .transaction-card {
+        align-items: flex-start;
+        grid-template-columns: 1fr auto;
+        gap: 0.35rem;
+        padding: 1rem;
+    }
+
+    .transaction-card__amount {
+        grid-column: 1;
+    }
+
+    .transaction-card__details {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+    }
+
+    .transaction-card__date {
+        grid-column: 2;
+        grid-row: 1;
+    }
+}
