@@ -3,10 +3,14 @@ package com.daanberger.budgeting.controllers;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import com.daanberger.budgeting.exceptions.BelfiusCsvParseException;
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
+import com.daanberger.budgeting.exceptions.EmptyCsvFileException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -47,5 +51,27 @@ public class ApiExceptionHandler {
     @ExceptionHandler(BelfiusCsvParseException.class)
     public ProblemDetail handleBelfiusCsvParseException(BelfiusCsvParseException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(EmptyCsvFileException.class)
+    public ProblemDetail handleEmptyCsvFileException(EmptyCsvFileException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ProblemDetail handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONTENT_TOO_LARGE, "Uploaded file is too large.");
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ProblemDetail handleMultipartException(MultipartException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "Invalid multipart request: expected multipart/form-data with a 'file' part.");
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ProblemDetail handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "Required part '" + ex.getRequestPartName() + "' is missing.");
     }
 }

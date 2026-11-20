@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
 import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
 import com.daanberger.budgeting.controllers.dto.TransactionResponse;
+import com.daanberger.budgeting.exceptions.EmptyCsvFileException;
 import com.daanberger.budgeting.services.TransactionIngestionService;
 import com.daanberger.budgeting.services.TransactionService;
 
@@ -61,7 +62,7 @@ public class TransactionController {
     @PostMapping("/import")
     public void importCsv(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("Uploaded CSV file cannot be empty.");
+            throw new EmptyCsvFileException();
         }
 
         try (InputStream stream = file.getInputStream()) {

@@ -1,15 +1,19 @@
 package com.daanberger.budgeting.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
@@ -207,5 +212,37 @@ public class TransactionControllerTests {
                                 .andExpect(status().isNotFound());
 
                 verify(transactionService).assignCategory(transactionId, request);
+        }
+
+        @Test
+        void importCsv_WithEmptyFile_ReturnsBadRequest() throws Exception {
+                MockMultipartFile file = new MockMultipartFile(
+                                "file", "statement.csv", "text/csv", new byte[0]);
+
+                mockMvc.perform(multipart("/api/transaction/import").file(file))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.detail").value("Uploaded CSV file cannot be empty."));
+
+                verify(transactionIngestionService, never()).ingestFromCsv(any(InputStream.class));
+        }
+
+        @Test
+        void importCsv_WithoutMultipartBody_ReturnsBadRequest() throws Exception {
+                mockMvc.perform(post("/api/transaction/import"))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.detail")
+                                                .value("Invalid multipart request: expected multipart/form-data with a 'file' part."));
+
+                verify(transactionIngestionService, never()).ingestFromCsv(any(InputStream.class));
+        }
+
+        @Test
+        void importCsv_WithoutFilePart_ReturnsBadRequest() throws Exception {
+                mockMvc.perform(multipart("/api/transaction/import"))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                                .andExpect(jsonPath("$.detail").value("Required part 'file' is missing."));
+
+                verify(transactionIngestionService, never()).ingestFromCsv(any(InputStream.class));
         }
 }
