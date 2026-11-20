@@ -1,0 +1,40 @@
+<aside class="shell__rail">
+  <a class="shell__logo" routerLink="/dashboard">
+    <span class="shell__logo-mark" aria-hidden="true">
+      <span class="shell__logo-bar shell__logo-bar--needs"></span>
+      <span class="shell__logo-bar shell__logo-bar--wants"></span>
+      <span class="shell__logo-bar shell__logo-bar--savings"></span>
+    </span>
+    Budget
+  </a>
+
+  <nav class="shell__nav" aria-label="Main">
+    <ul class="shell__nav-list">
+      @for (item of navItems; track item.path) {
+        <li>
+          <a
+            class="shell__nav-item"
+            [routerLink]="item.path"
+            routerLinkActive="shell__nav-item--active"
+            ariaCurrentWhenActive="page"
+          >
+            <svg class="shell__nav-icon" [lucideIcon]="item.icon"></svg>
+            <span class="shell__nav-label">{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="shell__account">
+    <span class="shell__avatar" aria-hidden="true">{{ account.initials }}</span>
+    <span class="shell__account-text">
+      <span class="shell__account-name">{{ account.name }}</span>
+      <span class="shell__account-bank">{{ account.bankAccount }}</span>
+    </span>
+  </div>
+</aside>
+
+<main class="shell__content">
+  <router-outlet />
+</main>

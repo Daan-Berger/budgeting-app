@@ -1,17 +1,8 @@
-.transactions-page {
-    min-height: 100vh;
-    padding: 2rem clamp(1rem, 5vw, 4rem) 4rem;
-    background: #101113;
-    color: #f8fafc;
-}
-
 .transactions-page__header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     gap: 1.5rem;
-    max-width: 960px;
-    margin: 0 auto;
     padding-bottom: 1.25rem;
 }
 
