@@ -49,7 +49,7 @@ Config: `application.properties` imports `../.env` (relative to `backend/`) for 
 
 ## Frontend architecture
 
-Angular 22, standalone components, Angular Material (theme in `src/material-theme.scss`), `provideHttpClient()` in `app.config.ts`. Code is organized by feature under `src/app/features/<feature>/` with `pages/`, `components/`, `services/`, `models/` subfolders. Pages are lazy-loaded via `loadComponent` in `app.routes.ts`. Component files follow the new naming convention (`transaction-list.ts`, class `TransactionList`, no `.component` suffix). Services use `inject()` and call relative `/api/...` URLs (relying on the dev proxy). Frontend models mirror backend response DTOs.
+Angular 22, standalone components, Angular Material (theme in `src/material-theme.scss`, built on the design tokens in `src/styles/tokens.css`; use the `--color-*`, `--font-*`, `--space-*` and `--radius-*` custom properties instead of hardcoded values; designs are in Penpot, rationale in `docs/design/visual-direction.md`), `provideHttpClient()` in `app.config.ts`. Code is organized by feature under `src/app/features/<feature>/` with `pages/`, `components/`, `services/`, `models/` subfolders. Pages are lazy-loaded via `loadComponent` in `app.routes.ts`. Component files follow the new naming convention (`transaction-list.ts`, class `TransactionList`, no `.component` suffix). Services use `inject()` and call relative `/api/...` URLs (relying on the dev proxy). Frontend models mirror backend response DTOs.
 
 ## Workflow
 

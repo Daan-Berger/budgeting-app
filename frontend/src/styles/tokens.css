@@ -1,0 +1,97 @@
+/*
+ * Design tokens: "banknote ledger" visual direction (docs/design/visual-direction.md).
+ * Source of truth is the Penpot file "Budgeting App" (library colours, typographies and the
+ * "Core" token set). Keep the values here in sync with it.
+ */
+:root {
+  /* Palette */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f4f6f3;
+  --color-neutral-100: #e9ede8;
+  --color-neutral-200: #dce2dc;
+  --color-neutral-300: #c4ccc5;
+  --color-neutral-500: #75807b;
+  --color-neutral-600: #5a6561;
+  --color-neutral-700: #3c4643;
+  --color-neutral-900: #161c1a;
+
+  --color-primary-50: #e8f0f1;
+  --color-primary-100: #d2e2e5;
+  --color-primary-600: #1f5160;
+  --color-primary-700: #173e4a;
+
+  /* Buckets: each takes the colour of a euro note (€20 / €50 / €100). */
+  --color-needs-100: #dce8f6;
+  --color-needs-500: #2f6db5;
+  --color-needs-700: #1f4e85;
+  --color-wants-100: #fbe7d3;
+  --color-wants-500: #e07b24;
+  --color-wants-700: #9a4d0e;
+  --color-savings-100: #ddf0e2;
+  --color-savings-500: #3e9a5c;
+  --color-savings-700: #276b3e;
+
+  /* Semantic: a step deeper than the bucket colours so they never read as a bucket. */
+  --color-success: #1e6b3a;
+  --color-warning: #a8620b;
+  --color-danger: #b3261e;
+  --color-danger-bg: #fbe9e7;
+
+  /* Roles */
+  --color-bg-page: var(--color-neutral-50);
+  --color-surface: var(--color-neutral-0);
+  --color-surface-muted: var(--color-neutral-50);
+  --color-text: var(--color-neutral-900);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-muted: var(--color-neutral-500);
+  --color-border-subtle: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-300);
+  --color-action: var(--color-primary-600);
+  --color-action-hover: var(--color-primary-700);
+  --color-on-action: var(--color-neutral-0);
+  --color-focus-ring: var(--color-primary-600);
+
+  /* Typography: Hanken Grotesk, hierarchy from size and weight. */
+  --font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 600 48px / 56px var(--font-family);
+  --font-heading-l: 600 32px / 40px var(--font-family);
+  --font-heading-m: 600 24px / 32px var(--font-family);
+  --font-heading-s: 600 18px / 26px var(--font-family);
+  --font-body-l: 400 16px / 24px var(--font-family);
+  --font-body-m: 400 14px / 20px var(--font-family);
+  --font-body-m-strong: 600 14px / 20px var(--font-family);
+  --font-label: 500 12px / 16px var(--font-family);
+  --font-caption: 400 12px / 16px var(--font-family);
+
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radius follows hierarchy */
+  --radius-badge: 4px;
+  --radius-control: 8px;
+  --radius-card: 14px;
+  --radius-full: 999px;
+
+  /* Elevation: hairlines on surfaces; shadows only for overlays (menus, dialogs). */
+  --border-hairline: 1px solid var(--color-border-subtle);
+  --shadow-overlay: 0 8px 24px -4px rgb(22 28 26 / 16%), 0 1px 3px rgb(22 28 26 / 8%);
+  --shadow-dialog: 0 24px 48px -12px rgb(22 28 26 / 28%);
+
+  /* Layout */
+  --layout-rail-width: 232px;
+  --layout-content-max: 1120px;
+  --layout-gutter: 24px;
+  --layout-gutter-mobile: 16px;
+}
+
+/* Amounts always line up: tabular figures, right-aligned in columns. */
+.amount {
+  font-variant-numeric: tabular-nums;
+}
