@@ -1,0 +1,13 @@
+<main class="transactions-page">
+    <header class="transactions-page__header">
+        <div>
+            <p class="transactions-page__eyebrow">Expense tracker</p>
+            <h1>Transactions</h1>
+        </div>
+        <button class="transactions-page__upload-button" matButton="filled" (click)="openUploadDialog()">
+            <span aria-hidden="true">+</span>
+            Upload CSV
+        </button>
+    </header>
+    <app-transaction-list />
+</main>

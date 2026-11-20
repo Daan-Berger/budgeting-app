@@ -1,0 +1,146 @@
+.upload-dialog {
+    padding: 1.5rem;
+    background: #1b1c1f;
+    color: #f8fafc;
+}
+
+.upload-dialog__header,
+.upload-dialog__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.upload-dialog__eyebrow {
+    margin: 0 0 0.35rem;
+    color: #60a5fa;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.upload-dialog h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: -0.035em;
+}
+
+.upload-dialog__close {
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: #292c31;
+    color: #cbd5e1;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.upload-dialog__description {
+    margin: 1.25rem 0;
+    color: #94a3b8;
+    line-height: 1.5;
+}
+
+.upload-dialog__dropzone {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 2rem 1rem;
+    border: 1px dashed #475569;
+    border-radius: 0.75rem;
+    background: #151619;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 160ms ease, background 160ms ease;
+}
+
+.upload-dialog__dropzone:hover {
+    border-color: #60a5fa;
+    background: #182238;
+}
+
+.upload-dialog__icon {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    margin-bottom: 0.35rem;
+    border-radius: 50%;
+    background: #243b67;
+    color: #60a5fa;
+    font-size: 1.5rem;
+}
+
+.upload-dialog__dropzone--selected {
+    border-style: solid;
+    border-color: #3b82f6;
+}
+
+.upload-dialog__icon--file {
+    border-radius: 0.6rem;
+}
+
+.upload-dialog__dropzone-title {
+    font-weight: 700;
+}
+
+.upload-dialog__file-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.upload-dialog__error {
+    margin: 0.75rem 0 0;
+    color: #f87171;
+    font-size: 0.875rem;
+}
+
+.upload-dialog__dropzone-hint {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.upload-dialog__file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.upload-dialog__actions {
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.upload-dialog__cancel,
+.upload-dialog__submit {
+    min-height: 2.6rem;
+    padding: 0.65rem 1rem;
+    border-radius: 0.55rem;
+    font-weight: 700;
+}
+
+.upload-dialog__cancel {
+    border: 1px solid #3f4650;
+    background: transparent;
+    color: #cbd5e1;
+}
+
+.upload-dialog__submit {
+    border: 1px solid #3b82f6;
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+.upload-dialog__submit:hover {
+    background: #60a5fa;
+}
