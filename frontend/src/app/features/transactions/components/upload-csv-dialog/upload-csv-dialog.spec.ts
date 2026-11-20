@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { of, Subject, throwError } from 'rxjs';
+import { ImportResult } from '../../models/import-result.model';
 import { TransactionService } from '../../services/transaction.service';
 import { UploadCsvDialog } from './upload-csv-dialog';
 
@@ -69,20 +70,75 @@ describe('UploadCsvDialog', () => {
     expect(submitButton().disabled).toBe(true);
   });
 
-  it('imports the selected file and closes on success', async () => {
+  async function importWithResult(result: ImportResult): Promise<void> {
+    serviceStub.importCsv.mockReturnValue(of(result));
+    selectFile(new File(['a'], 'a.csv'));
+    await fixture.whenStable();
+    submitButton().click();
+    await fixture.whenStable();
+  }
+
+  function resultText(): string | undefined {
+    return element.querySelector('[role="status"]')?.textContent?.trim();
+  }
+
+  it('imports the selected file and shows the result instead of closing', async () => {
     const file = new File(['a'], 'a.csv');
-    serviceStub.importCsv.mockReturnValue(of(undefined));
+    serviceStub.importCsv.mockReturnValue(of({ totalRows: 2, imported: 2, skippedDuplicates: 0 }));
     selectFile(file);
     await fixture.whenStable();
 
     submitButton().click();
+    await fixture.whenStable();
 
     expect(serviceStub.importCsv).toHaveBeenCalledWith(file);
+    expect(dialogRefStub.close).not.toHaveBeenCalled();
+    expect(resultText()).toBe('Imported 2 new transactions.');
+    expect(element.querySelector('.upload-dialog__dropzone')).toBeNull();
+    expect(element.querySelector('.upload-dialog__cancel')).toBeNull();
+  });
+
+  it('closes via the Done button after a successful import', async () => {
+    await importWithResult({ totalRows: 1, imported: 1, skippedDuplicates: 0 });
+
+    expect(submitButton().textContent?.trim()).toBe('Done');
+    submitButton().click();
+
     expect(dialogRefStub.close).toHaveBeenCalled();
   });
 
+  it.each<[ImportResult, string]>([
+    [{ totalRows: 1, imported: 1, skippedDuplicates: 0 }, 'Imported 1 new transaction.'],
+    [
+      { totalRows: 42, imported: 30, skippedDuplicates: 12 },
+      'Imported 30 new transactions. 12 were already imported.',
+    ],
+    [
+      { totalRows: 2, imported: 1, skippedDuplicates: 1 },
+      'Imported 1 new transaction. 1 was already imported.',
+    ],
+    [
+      { totalRows: 42, imported: 0, skippedDuplicates: 42 },
+      'No new transactions; this file was already imported.',
+    ],
+    [
+      { totalRows: 0, imported: 0, skippedDuplicates: 0 },
+      'The file did not contain any transactions.',
+    ],
+  ])('shows the import result %o as "%s"', async (result, expected) => {
+    await importWithResult(result);
+
+    expect(resultText()).toBe(expected);
+  });
+
+  it('marks the result as empty when nothing was imported', async () => {
+    await importWithResult({ totalRows: 42, imported: 0, skippedDuplicates: 42 });
+
+    expect(element.querySelector('.upload-dialog__result--empty')).not.toBeNull();
+  });
+
   it('does not close while the import is still in progress', async () => {
-    serviceStub.importCsv.mockReturnValue(new Subject<void>());
+    serviceStub.importCsv.mockReturnValue(new Subject<ImportResult>());
     selectFile(new File(['a'], 'a.csv'));
     await fixture.whenStable();
 

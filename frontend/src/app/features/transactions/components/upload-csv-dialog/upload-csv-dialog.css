@@ -101,6 +101,22 @@
     font-size: 0.875rem;
 }
 
+.upload-dialog__result {
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid #166534;
+    border-radius: 0.75rem;
+    background: #10251a;
+    color: #bbf7d0;
+    line-height: 1.5;
+}
+
+.upload-dialog__result--empty {
+    border-color: #475569;
+    background: #151619;
+    color: #cbd5e1;
+}
+
 .upload-dialog__dropzone-hint {
     color: #94a3b8;
     font-size: 0.8rem;

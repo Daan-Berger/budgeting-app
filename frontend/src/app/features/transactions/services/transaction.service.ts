@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, Subscription, tap } from 'rxjs';
+import { ImportResult } from '../models/import-result.model';
 import { Transaction } from '../models/transaction.model';
 
 @Injectable({ providedIn: 'root' })
@@ -33,12 +34,12 @@ export class TransactionService {
         });
     }
 
-    importCsv(csv: File): Observable<void> {
+    importCsv(csv: File): Observable<ImportResult> {
         const formData = new FormData();
         formData.append('file', csv, csv.name);
 
         return this.http
-            .post<void>(`${this.baseUrl}/import`, formData)
+            .post<ImportResult>(`${this.baseUrl}/import`, formData)
             .pipe(tap(() => this.refresh()));
     }
 }

@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { ImportResult } from '../models/import-result.model';
 import { Transaction } from '../models/transaction.model';
 import { TransactionService } from './transaction.service';
 
@@ -94,18 +95,19 @@ describe('TransactionService', () => {
 
   it('importCsv posts the file as multipart form data and refreshes afterwards', () => {
     const file = new File(['a;b'], 'statement.csv', { type: 'text/csv' });
-    let completed = false;
+    const importResult: ImportResult = { totalRows: 3, imported: 2, skippedDuplicates: 1 };
+    let result: ImportResult | undefined;
 
-    service.importCsv(file).subscribe(() => (completed = true));
+    service.importCsv(file).subscribe((data) => (result = data));
 
     const req = httpMock.expectOne('/api/transaction/import');
     expect(req.request.method).toBe('POST');
     const body = req.request.body as FormData;
     const sent = body.get('file') as File;
     expect(sent.name).toBe('statement.csv');
-    req.flush(null);
+    req.flush(importResult);
 
-    expect(completed).toBe(true);
+    expect(result).toEqual(importResult);
     httpMock.expectOne('/api/transaction').flush(transactions);
     expect(service.transactions()).toEqual(transactions);
   });
