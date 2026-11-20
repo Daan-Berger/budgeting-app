@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { Transaction } from '../models/transaction.model';
 
 @Injectable({ providedIn: 'root' })
@@ -14,13 +14,17 @@ export class TransactionService {
     readonly transactions = this._transactions.asReadonly();
     readonly error = this._error.asReadonly();
 
+    private refreshSubscription?: Subscription;
+
     getTransactions(): Observable<Transaction[]> {
         return this.http.get<Transaction[]>(this.baseUrl);
     }
 
     refresh(): void {
+        this.refreshSubscription?.unsubscribe();
         this._error.set(null);
-        this.getTransactions().subscribe({
+
+        this.refreshSubscription = this.getTransactions().subscribe({
             next: (data) => this._transactions.set(data),
             error: (err) => {
                 console.error('Failed to fetch transactions:', err);

@@ -81,6 +81,17 @@ describe('TransactionService', () => {
     httpMock.expectOne('/api/transaction').flush(transactions);
   });
 
+  it('refresh cancels a pending refresh so the latest one wins', () => {
+    service.refresh();
+    const first = httpMock.expectOne('/api/transaction');
+    service.refresh();
+    const second = httpMock.expectOne('/api/transaction');
+
+    expect(first.cancelled).toBe(true);
+    second.flush(transactions);
+    expect(service.transactions()).toEqual(transactions);
+  });
+
   it('importCsv posts the file as multipart form data and refreshes afterwards', () => {
     const file = new File(['a;b'], 'statement.csv', { type: 'text/csv' });
     let completed = false;
