@@ -6,10 +6,6 @@ Penpot sources: the **Rail** board and **Divider** of every frame on the *Deskto
 "Transactions"), the **Tab bar** board of every frame on the *Mobile* page, and the **Logo** and
 **Nav item** (Active / Default) components on the *Components* page.
 
-| Desktop rail                        | Mobile tab bar                          |
-| ----------------------------------- | --------------------------------------- |
-| ![](app-shell/desktop-rail.png)     | ![](app-shell/mobile-tab-bar.png)       |
-
 Breakpoint: desktop layout from **1024px**, mobile below. Only one breakpoint.
 
 ## Desktop (Penpot frames are 1440 wide)

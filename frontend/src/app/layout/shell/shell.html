@@ -11,13 +11,17 @@
   <nav class="shell__nav" aria-label="Main">
     <ul class="shell__nav-list">
       @for (item of navItems; track item.path) {
-      <li>
-        <a class="shell__nav-item" [routerLink]="item.path" routerLinkActive="shell__nav-item--active"
-          ariaCurrentWhenActive="page">
-          <svg class="shell__nav-icon" [lucideIcon]="item.icon"></svg>
-          <span class="shell__nav-label">{{ item.label }}</span>
-        </a>
-      </li>
+        <li>
+          <a
+            class="shell__nav-item"
+            [routerLink]="item.path"
+            routerLinkActive="shell__nav-item--active"
+            ariaCurrentWhenActive="page"
+          >
+            <svg class="shell__nav-icon" [lucideIcon]="item.icon"></svg>
+            <span class="shell__nav-label">{{ item.label }}</span>
+          </a>
+        </li>
       }
     </ul>
   </nav>
