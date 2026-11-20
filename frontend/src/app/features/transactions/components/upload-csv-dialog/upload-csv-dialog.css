@@ -101,6 +101,32 @@
     font-size: 0.875rem;
 }
 
+.upload-dialog__result {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 2rem 1rem;
+    border: 1px solid #166534;
+    border-radius: 0.75rem;
+    background: #151619;
+    text-align: center;
+}
+
+.upload-dialog__result .upload-dialog__icon {
+    background: #14532d;
+    color: #4ade80;
+}
+
+.upload-dialog__result--empty {
+    border-color: #475569;
+}
+
+.upload-dialog__result--empty .upload-dialog__icon {
+    background: #243b67;
+    color: #60a5fa;
+}
+
 .upload-dialog__dropzone-hint {
     color: #94a3b8;
     font-size: 0.8rem;

@@ -50,3 +50,11 @@ Config: `application.properties` imports `../.env` (relative to `backend/`) for 
 ## Frontend architecture
 
 Angular 22, standalone components, Angular Material (theme in `src/material-theme.scss`), `provideHttpClient()` in `app.config.ts`. Code is organized by feature under `src/app/features/<feature>/` with `pages/`, `components/`, `services/`, `models/` subfolders. Pages are lazy-loaded via `loadComponent` in `app.routes.ts`. Component files follow the new naming convention (`transaction-list.ts`, class `TransactionList`, no `.component` suffix). Services use `inject()` and call relative `/api/...` URLs (relying on the dev proxy). Frontend models mirror backend response DTOs.
+
+## Workflow
+
+GitHub issues (created with `gh issue create`) follow this structure:
+- Title: conventional-commit style, `feat(backend): ...` / `feat(frontend): ...` / `fix(...)`; plain `feat: ...` when it spans both.
+- Body sections: `## Goal` (the problem and why), optionally `## Proposal` (approach), `## Acceptance criteria` as a `- [ ]` checklist of concrete, checkable items (including the tests to add), and optionally `## Out of scope`.
+
+Branches are named `<type>/<short-slug>-#<issue>`, where `<type>` matches the issue title: `feature/` for `feat` issues (e.g. `feature/import-result-#21`) and `fix/` for `fix` issues (e.g. `fix/invalid-csv-upload-#22`).

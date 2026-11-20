@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
+import { ImportResult } from '../../models/import-result.model';
 import { TransactionService } from '../../services/transaction.service';
 
 @Component({
@@ -15,6 +16,18 @@ export class UploadCsvDialog {
 
   readonly selectedFile = signal<File | null>(null)
   readonly errorMessage = signal<string | null>(null)
+  readonly result = signal<ImportResult | null>(null)
+  readonly resultMessage = computed(() => {
+    const result = this.result()
+    return result ? describeImportResult(result) : null
+  })
+  readonly resultDetails = computed(() => {
+    const result = this.result()
+    if (!result || result.totalRows === 0) {
+      return null
+    }
+    return `${result.totalRows} ${pluralize(result.totalRows, 'row')} in file · ${result.imported} new · ${result.skippedDuplicates} already imported`
+  })
   private readonly pending = signal(false)
 
   close(): void {
@@ -47,10 +60,28 @@ export class UploadCsvDialog {
     this.transactionService.importCsv(file).pipe(
       finalize(() => this.pending.set(false)),
     ).subscribe({
-      next: () => this.close(),
+      next: (result) => this.result.set(result),
       error: () => {
         this.errorMessage.set('The CSV file could not be imported.')
       },
     })
   }
+}
+
+function describeImportResult({ totalRows, imported, skippedDuplicates }: ImportResult): string {
+  if (totalRows === 0) {
+    return 'The file did not contain any transactions.'
+  }
+  if (imported === 0) {
+    return 'No new transactions. This file was already imported.'
+  }
+  const importedText = `Imported ${imported} new ${pluralize(imported, 'transaction')}.`
+  if (skippedDuplicates === 0) {
+    return importedText
+  }
+  return `${importedText} ${skippedDuplicates} ${pluralize(skippedDuplicates, 'was', 'were')} already imported.`
+}
+
+function pluralize(count: number, singular: string, plural = `${singular}s`): string {
+  return count === 1 ? singular : plural
 }

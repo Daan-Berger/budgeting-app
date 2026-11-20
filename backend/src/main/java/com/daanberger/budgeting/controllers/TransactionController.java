@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
 import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
+import com.daanberger.budgeting.controllers.dto.ImportResultDto;
 import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.exceptions.EmptyCsvFileException;
 import com.daanberger.budgeting.services.TransactionIngestionService;
@@ -60,13 +61,13 @@ public class TransactionController {
     }
 
     @PostMapping("/import")
-    public void importCsv(@RequestParam("file") MultipartFile file) throws IOException {
+    public ImportResultDto importCsv(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new EmptyCsvFileException();
         }
 
         try (InputStream stream = file.getInputStream()) {
-            ingestionService.ingestFromCsv(stream);
+            return ingestionService.ingestFromCsv(stream);
         }
     }
 }

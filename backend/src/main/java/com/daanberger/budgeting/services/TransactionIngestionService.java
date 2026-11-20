@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.daanberger.budgeting.controllers.dto.ImportResultDto;
 import com.daanberger.budgeting.controllers.dto.RawTransactionDto;
 import com.daanberger.budgeting.domain.Transaction;
 import com.daanberger.budgeting.parsing.BankCsvParser;
@@ -23,8 +24,9 @@ public class TransactionIngestionService {
     }
 
     @Transactional
-    public void ingestFromCsv(InputStream stream) {
+    public ImportResultDto ingestFromCsv(InputStream stream) {
         List<RawTransactionDto> transactionDtos = csvParser.parseDto(stream);
+        int imported = 0;
         for (RawTransactionDto dto : transactionDtos) {
             if (!repository.existsByDateAndAmountAndDescription(
                     dto.date(), dto.amount(), dto.description())) {
@@ -35,8 +37,11 @@ public class TransactionIngestionService {
                         dto.counterpartyIban(),
                         dto.description(),
                         null));
+                imported++;
             }
         }
-
+        int totalRows = transactionDtos.size();
+        int skippedDuplicates = totalRows - imported;
+        return new ImportResultDto(totalRows, imported, skippedDuplicates);
     }
 }

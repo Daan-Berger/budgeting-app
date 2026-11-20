@@ -3,6 +3,8 @@ package com.daanberger.budgeting.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.daanberger.budgeting.controllers.dto.ImportResultDto;
 import com.daanberger.budgeting.controllers.dto.RawTransactionDto;
 import com.daanberger.budgeting.domain.Transaction;
 import com.daanberger.budgeting.parsing.BankCsvParser;
@@ -47,7 +50,9 @@ public class TransactionIngestionServiceTests {
         when(parser.parseDto(any(InputStream.class)))
                 .thenReturn(List.of(dto));
 
-        service.ingestFromCsv(new ByteArrayInputStream(new byte[0]));
+        ImportResultDto result = service.ingestFromCsv(new ByteArrayInputStream(new byte[0]));
+
+        assertEquals(new ImportResultDto(1, 1, 0), result);
 
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
 
@@ -77,8 +82,46 @@ public class TransactionIngestionServiceTests {
                 dto.date(), dto.amount(), dto.description()))
                 .thenReturn(true);
 
-        service.ingestFromCsv(new ByteArrayInputStream(new byte[0]));
+        ImportResultDto result = service.ingestFromCsv(new ByteArrayInputStream(new byte[0]));
 
-        verify(repository, org.mockito.Mockito.never()).save(any(Transaction.class));
+        assertEquals(new ImportResultDto(1, 0, 1), result);
+        verify(repository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void ingestFromCsv_WithMixOfNewAndExistingTransactions_ShouldCountBoth() {
+        RawTransactionDto existing = rawTransaction("-15.50", "Purchase REF. : 1");
+        RawTransactionDto newOne = rawTransaction("-4.20", "Coffee REF. : 2");
+        RawTransactionDto newTwo = rawTransaction("-60.00", "Groceries REF. : 3");
+
+        when(parser.parseDto(any(InputStream.class)))
+                .thenReturn(List.of(existing, newOne, newTwo));
+        when(repository.existsByDateAndAmountAndDescription(
+                existing.date(), existing.amount(), existing.description()))
+                .thenReturn(true);
+
+        ImportResultDto result = service.ingestFromCsv(new ByteArrayInputStream(new byte[0]));
+
+        assertEquals(new ImportResultDto(3, 2, 1), result);
+        verify(repository, times(2)).save(any(Transaction.class));
+    }
+
+    @Test
+    void ingestFromCsv_WithNoRows_ShouldReturnZeroCounts() {
+        when(parser.parseDto(any(InputStream.class))).thenReturn(List.of());
+
+        ImportResultDto result = service.ingestFromCsv(new ByteArrayInputStream(new byte[0]));
+
+        assertEquals(new ImportResultDto(0, 0, 0), result);
+        verify(repository, never()).save(any(Transaction.class));
+    }
+
+    private static RawTransactionDto rawTransaction(String amount, String description) {
+        return new RawTransactionDto(
+                LocalDate.of(2026, 10, 26),
+                new BigDecimal(amount),
+                "SAMPLE STORE 999999",
+                null,
+                description);
     }
 }

@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daanberger.budgeting.controllers.dto.AssignCategoryRequest;
 import com.daanberger.budgeting.controllers.dto.CreateTransactionRequest;
+import com.daanberger.budgeting.controllers.dto.ImportResultDto;
 import com.daanberger.budgeting.controllers.dto.TransactionResponse;
 import com.daanberger.budgeting.exceptions.CategoryNotFoundException;
 import com.daanberger.budgeting.exceptions.TransactionNotFoundException;
@@ -212,6 +213,33 @@ public class TransactionControllerTests {
                                 .andExpect(status().isNotFound());
 
                 verify(transactionService).assignCategory(transactionId, request);
+        }
+
+        @Test
+        void importCsv_WithNewTransactions_ReturnsImportResult() throws Exception {
+                MockMultipartFile file = new MockMultipartFile(
+                                "file", "statement.csv", "text/csv", "csv content".getBytes());
+                when(transactionIngestionService.ingestFromCsv(any(InputStream.class)))
+                                .thenReturn(new ImportResultDto(3, 2, 1));
+
+                mockMvc.perform(multipart("/api/transaction/import").file(file))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.totalRows").value(3))
+                                .andExpect(jsonPath("$.imported").value(2))
+                                .andExpect(jsonPath("$.skippedDuplicates").value(1));
+        }
+
+        @Test
+        void importCsv_WithOnlyDuplicates_ReturnsOkWithZeroImported() throws Exception {
+                MockMultipartFile file = new MockMultipartFile(
+                                "file", "statement.csv", "text/csv", "csv content".getBytes());
+                when(transactionIngestionService.ingestFromCsv(any(InputStream.class)))
+                                .thenReturn(new ImportResultDto(42, 0, 42));
+
+                mockMvc.perform(multipart("/api/transaction/import").file(file))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.imported").value(0))
+                                .andExpect(jsonPath("$.skippedDuplicates").value(42));
         }
 
         @Test
