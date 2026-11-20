@@ -230,7 +230,7 @@ public class TransactionControllerTests {
                 mockMvc.perform(post("/api/transaction/import"))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.detail")
-                                                .value("Request must be multipart/form-data with a 'file' part."));
+                                                .value("Invalid multipart request: expected multipart/form-data with a 'file' part."));
 
                 verify(transactionIngestionService, never()).ingestFromCsv(any(InputStream.class));
         }

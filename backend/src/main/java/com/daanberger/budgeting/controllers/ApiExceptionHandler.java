@@ -65,6 +65,6 @@ public class ApiExceptionHandler {
     @ExceptionHandler(MultipartException.class)
     public ProblemDetail handleMultipartException(MultipartException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
-                "Request must be multipart/form-data with a 'file' part.");
+                "Invalid multipart request: expected multipart/form-data with a 'file' part.");
     }
 }
