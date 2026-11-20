@@ -79,7 +79,7 @@ describe('UploadCsvDialog', () => {
   }
 
   function resultText(): string | undefined {
-    return element.querySelector('[role="status"]')?.textContent?.trim();
+    return element.querySelector('.upload-dialog__result-title')?.textContent?.trim();
   }
 
   it('imports the selected file and shows the result instead of closing', async () => {
@@ -129,6 +129,31 @@ describe('UploadCsvDialog', () => {
     await importWithResult(result);
 
     expect(resultText()).toBe(expected);
+  });
+
+  it('shows the row counts below the message', async () => {
+    await importWithResult({ totalRows: 42, imported: 30, skippedDuplicates: 12 });
+
+    const status = element.querySelector('[role="status"]');
+    expect(status?.querySelector('.upload-dialog__dropzone-hint')?.textContent).toBe(
+      '42 rows in file · 30 new · 12 already imported',
+    );
+  });
+
+  it('uses the singular for a single row', async () => {
+    await importWithResult({ totalRows: 1, imported: 1, skippedDuplicates: 0 });
+
+    expect(element.querySelector('.upload-dialog__dropzone-hint')?.textContent).toBe(
+      '1 row in file · 1 new · 0 already imported',
+    );
+  });
+
+  it('hides the row counts when the file had no rows', async () => {
+    await importWithResult({ totalRows: 0, imported: 0, skippedDuplicates: 0 });
+
+    expect(
+      element.querySelector('.upload-dialog__result .upload-dialog__dropzone-hint'),
+    ).toBeNull();
   });
 
   it('marks the result as empty when nothing was imported', async () => {

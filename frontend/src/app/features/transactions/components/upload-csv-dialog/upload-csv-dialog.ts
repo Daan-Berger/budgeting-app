@@ -21,6 +21,13 @@ export class UploadCsvDialog {
     const result = this.result()
     return result ? describeImportResult(result) : null
   })
+  readonly resultDetails = computed(() => {
+    const result = this.result()
+    if (!result || result.totalRows === 0) {
+      return null
+    }
+    return `${result.totalRows} ${pluralize(result.totalRows, 'row')} in file · ${result.imported} new · ${result.skippedDuplicates} already imported`
+  })
   private readonly pending = signal(false)
 
   close(): void {
@@ -66,7 +73,7 @@ function describeImportResult({ totalRows, imported, skippedDuplicates }: Import
     return 'The file did not contain any transactions.'
   }
   if (imported === 0) {
-    return 'No new transactions; this file was already imported.'
+    return 'No new transactions: this file was already imported.'
   }
   const importedText = `Imported ${imported} new ${pluralize(imported, 'transaction')}.`
   if (skippedDuplicates === 0) {

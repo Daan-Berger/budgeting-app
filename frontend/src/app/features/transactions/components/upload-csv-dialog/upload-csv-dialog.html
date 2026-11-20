@@ -13,14 +13,20 @@
         Import your bank transactions to keep your expense tracker up to date.
     </p>
 
-    @if (resultMessage(); as message) {
-        <p
+    @if (result(); as result) {
+        <div
             class="upload-dialog__result"
-            [class.upload-dialog__result--empty]="result()?.imported === 0"
+            [class.upload-dialog__result--empty]="result.imported === 0"
             role="status"
         >
-            {{ message }}
-        </p>
+            <span class="upload-dialog__icon material-symbols-outlined" aria-hidden="true">
+                {{ result.imported === 0 ? 'info' : 'check' }}
+            </span>
+            <span class="upload-dialog__dropzone-title upload-dialog__result-title">{{ resultMessage() }}</span>
+            @if (resultDetails(); as details) {
+                <span class="upload-dialog__dropzone-hint">{{ details }}</span>
+            }
+        </div>
     } @else {
         <label
             class="upload-dialog__dropzone"
