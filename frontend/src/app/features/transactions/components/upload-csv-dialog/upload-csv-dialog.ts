@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { finalize } from 'rxjs';
 import { TransactionService } from '../../services/transaction.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class UploadCsvDialog {
 
   readonly selectedFile = signal<File | null>(null)
   readonly errorMessage = signal<string | null>(null)
+  private readonly pending = signal(false)
 
   close(): void {
     this.dialogRef.close()
@@ -37,11 +39,14 @@ export class UploadCsvDialog {
 
   onSubmit(): void {
     const file = this.selectedFile()
-    if (!file) {
+    if (!file || this.pending()) {
       return
     }
 
-    this.transactionService.importCsv(file).subscribe({
+    this.pending.set(true)
+    this.transactionService.importCsv(file).pipe(
+      finalize(() => this.pending.set(false)),
+    ).subscribe({
       next: () => this.close(),
       error: () => {
         this.errorMessage.set('The CSV file could not be imported.')
