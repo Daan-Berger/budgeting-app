@@ -1,0 +1,223 @@
+/*
+ * Matches the Penpot frames: "Mobile — *" (bottom tab bar) and "Desktop / *" (left rail).
+ * Mobile first; from 1024px up the nav becomes the rail. This is the only layout breakpoint
+ * (custom properties can't be used in media queries).
+ */
+
+:host {
+  --shell-tab-bar-height: 58px; /* tab: 8 + 22 icon + 4 + 16 label + 8 */
+
+  display: block;
+  min-height: 100vh;
+  background: var(--color-bg-page);
+  color: var(--color-text);
+}
+
+/* Tab bar (mobile) */
+
+.shell__rail {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  padding: var(--space-1) var(--space-2) max(var(--space-1), env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  border-top: var(--border-hairline);
+}
+
+.shell__logo,
+.shell__account {
+  display: none;
+}
+
+.shell__nav-list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shell__nav-list > li {
+  flex: 1;
+}
+
+.shell__nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-radius: var(--radius-control);
+  color: var(--color-text-secondary);
+  font: var(--font-caption);
+  text-decoration: none;
+}
+
+.shell__nav-item--active {
+  color: var(--color-action);
+  font: var(--font-label);
+}
+
+.shell__nav-item:focus-visible,
+.shell__logo:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.shell__nav-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+/* Content */
+
+.shell__content {
+  display: block;
+  padding: var(--space-4) var(--layout-gutter-mobile)
+    /* design's 24px bottom padding + tab bar (hairline, top padding, tab, bottom padding) */
+    calc(
+      var(--space-6) + 1px + var(--space-1) + var(--shell-tab-bar-height) +
+        max(var(--space-1), env(safe-area-inset-bottom))
+    );
+}
+
+/* Rail (desktop) */
+
+@media (min-width: 1024px) {
+  :host {
+    display: grid;
+    /* +1px for the divider hairline on the rail's right edge. */
+    grid-template-columns: calc(var(--layout-rail-width) + 1px) minmax(0, 1fr);
+  }
+
+  .shell__rail {
+    position: sticky;
+    inset: 0 auto auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    height: 100vh;
+    padding: var(--space-6) var(--space-4);
+    background: var(--color-bg-page);
+    border-top: 0;
+    border-right: var(--border-hairline);
+  }
+
+  .shell__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    align-self: flex-start;
+    margin: 0 var(--space-3);
+    border-radius: var(--radius-control);
+    color: var(--color-text);
+    font: var(--font-heading-s);
+    text-decoration: none;
+  }
+
+  /* 28px petrol tile with the 50/30/20 split as three bucket-coloured bars. */
+  .shell__logo-mark {
+    display: flex;
+    gap: 2px;
+    width: 28px;
+    height: 28px;
+    padding: var(--space-2) 6px var(--space-2) var(--space-1);
+    border-radius: var(--radius-control);
+    background: var(--color-action);
+  }
+
+  .shell__logo-bar {
+    border-radius: 1px;
+  }
+
+  .shell__logo-bar--needs {
+    width: 8px;
+    background: var(--color-needs-500);
+  }
+
+  .shell__logo-bar--wants {
+    width: 5px;
+    background: var(--color-wants-500);
+  }
+
+  .shell__logo-bar--savings {
+    width: 3px;
+    background: var(--color-savings-500);
+  }
+
+  .shell__nav-list {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .shell__nav-item {
+    flex-direction: row;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-neutral-700);
+    font: var(--font-body-m);
+  }
+
+  .shell__nav-item:hover {
+    color: var(--color-text);
+  }
+
+  .shell__nav-item--active {
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1px var(--color-border-subtle);
+    color: var(--color-text);
+    font: var(--font-body-m-strong);
+  }
+
+  .shell__nav-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-secondary);
+  }
+
+  .shell__nav-item--active .shell__nav-icon {
+    color: var(--color-action);
+  }
+
+  .shell__account {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: auto;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .shell__avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+    font: var(--font-label);
+  }
+
+  .shell__account-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .shell__account-name {
+    font: var(--font-body-m-strong);
+  }
+
+  .shell__account-bank {
+    color: var(--color-text-muted);
+    font: var(--font-caption);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .shell__content {
+    width: 100%;
+    max-width: calc(var(--layout-content-max) + 2 * var(--layout-content-inset));
+    padding: var(--space-8) var(--layout-content-inset) var(--space-12);
+  }
+}

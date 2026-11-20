@@ -88,6 +88,7 @@
   --layout-rail-width: 232px;
   --layout-content-max: 1120px;
   --layout-gutter: 24px;
+  --layout-content-inset: 44px; /* desktop content padding left/right (Penpot "Content" board) */
   --layout-gutter-mobile: 16px;
 }
 
