@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import com.daanberger.budgeting.exceptions.BelfiusCsvParseException;
 import com.daanberger.budgeting.exceptions.CategoryAlreadyExistsException;
@@ -66,5 +67,11 @@ public class ApiExceptionHandler {
     public ProblemDetail handleMultipartException(MultipartException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
                 "Invalid multipart request: expected multipart/form-data with a 'file' part.");
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ProblemDetail handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "Required part '" + ex.getRequestPartName() + "' is missing.");
     }
 }

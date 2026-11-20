@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -238,7 +239,9 @@ public class TransactionControllerTests {
         @Test
         void importCsv_WithoutFilePart_ReturnsBadRequest() throws Exception {
                 mockMvc.perform(multipart("/api/transaction/import"))
-                                .andExpect(status().isBadRequest());
+                                .andExpect(status().isBadRequest())
+                                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                                .andExpect(jsonPath("$.detail").value("Required part 'file' is missing."));
 
                 verify(transactionIngestionService, never()).ingestFromCsv(any(InputStream.class));
         }
