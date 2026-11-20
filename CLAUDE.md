@@ -57,4 +57,4 @@ GitHub issues (created with `gh issue create`) follow this structure:
 - Title: conventional-commit style, `feat(backend): ...` / `feat(frontend): ...` / `fix(...)`; plain `feat: ...` when it spans both.
 - Body sections: `## Goal` (the problem and why), optionally `## Proposal` (approach), `## Acceptance criteria` as a `- [ ]` checklist of concrete, checkable items (including the tests to add), and optionally `## Out of scope`.
 
-Branches are named `feature/<short-slug>-#<issue>` (e.g. `feature/import-result-#21`).
+Branches are named `<type>/<short-slug>-#<issue>`, where `<type>` matches the issue title: `feature/` for `feat` issues (e.g. `feature/import-result-#21`) and `fix/` for `fix` issues (e.g. `fix/invalid-csv-upload-#22`).
