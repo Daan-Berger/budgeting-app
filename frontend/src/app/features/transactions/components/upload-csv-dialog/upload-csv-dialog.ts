@@ -73,7 +73,7 @@ function describeImportResult({ totalRows, imported, skippedDuplicates }: Import
     return 'The file did not contain any transactions.'
   }
   if (imported === 0) {
-    return 'No new transactions: this file was already imported.'
+    return 'No new transactions. This file was already imported.'
   }
   const importedText = `Imported ${imported} new ${pluralize(imported, 'transaction')}.`
   if (skippedDuplicates === 0) {

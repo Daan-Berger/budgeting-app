@@ -119,7 +119,7 @@ describe('UploadCsvDialog', () => {
     ],
     [
       { totalRows: 42, imported: 0, skippedDuplicates: 42 },
-      'No new transactions; this file was already imported.',
+      'No new transactions. This file was already imported.',
     ],
     [
       { totalRows: 0, imported: 0, skippedDuplicates: 0 },
